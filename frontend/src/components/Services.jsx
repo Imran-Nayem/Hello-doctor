@@ -185,7 +185,7 @@ function Services() {
                 </div>
                 
                 <Button
-                  onClick={() => navigate('/user/model-processing')}
+                  onClick={() => navigate('/user/mri-processing')}
                   className='w-full bg-white text-purple-600 hover:bg-purple-50 font-semibold py-3 group-hover:scale-105 transition-transform duration-300'
                 >
                   Process with AI Models
@@ -301,9 +301,9 @@ function Services() {
                 Start AI Chat
               </Button>
               <Button
-                onClick={() => navigate('/user/model-processing')}
+                onClick={() => navigate('/user/mri-processing')}
                 variant="outline"
-                className='border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-8 py-3'
+                className='border-white text-blue-600  hover:bg-white hover:text-blue-500 font-semibold px-8 py-3'
               >
                 Process Files
               </Button>

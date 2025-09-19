@@ -84,7 +84,7 @@ function Services() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
       
-      <section id='services' className='py-20'>
+      <section id='services' className='py-20 mt-20'>
         <div className='container mx-auto px-4'>
           {/* Header */}
           <div className='text-center mb-16'>

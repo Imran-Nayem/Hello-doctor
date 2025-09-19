@@ -12,6 +12,7 @@ import { AuthContext } from './context/AuthContext';
 import { Progress } from "@/components/ui/progress";
 import { useContext } from 'react';
 import Services from './pages/Services';
+import ChatPage from './pages/ChatPage';
 
 axios.defaults.withCredentials = true;
 
@@ -30,6 +31,18 @@ function AppContent() {
       <Route path='/user/dashboard' element={
         <ProtectedRoute>
           <Dashboard/>
+        </ProtectedRoute>
+      } />
+
+      <Route path='/user/chat/:reportId' element={
+        <ProtectedRoute>
+          <ChatPage/>
+        </ProtectedRoute>
+      } />
+
+      <Route path='/user/chat/:reportId' element={
+        <ProtectedRoute>
+          <ChatPage/>
         </ProtectedRoute>
       } />
 

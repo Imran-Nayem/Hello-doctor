@@ -12,6 +12,7 @@ import { AuthContext } from './context/AuthContext';
 import { Progress } from "@/components/ui/progress";
 import { useContext } from 'react';
 import Services from './pages/Services';
+import MRIProcessing from './pages/MRIProcessing';
 import ChatPage from './pages/ChatPage';
 import TestChatPage from './pages/TextReportLanding';
 
@@ -47,6 +48,11 @@ function AppContent() {
         </ProtectedRoute>
       } />
 
+      <Route path='/user/mri-processing' element={
+        <ProtectedRoute>
+          <MRIProcessing/>
+        </ProtectedRoute>
+      } />
 
     </Routes>
 

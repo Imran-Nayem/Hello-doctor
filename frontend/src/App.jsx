@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { useContext } from 'react';
 import Services from './pages/Services';
 import ChatPage from './pages/ChatPage';
+import TestChatPage from './pages/TextReportLanding';
 
 axios.defaults.withCredentials = true;
 
@@ -34,9 +35,9 @@ function AppContent() {
         </ProtectedRoute>
       } />
 
-      <Route path='/user/chat/:reportId' element={
+      <Route path='/user/testchat' element={
         <ProtectedRoute>
-          <ChatPage/>
+          <TestChatPage/>
         </ProtectedRoute>
       } />
 

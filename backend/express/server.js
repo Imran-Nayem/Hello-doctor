@@ -5,7 +5,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth.routes");
 const app = express();
 const cookieParser = require('cookie-parser');
-
+const chatRoutes = require("./routes/chat.routes");
 
 app.use(cookieParser());
 app.use(cors({
@@ -21,7 +21,7 @@ app.use('/images', express.static('public'))
 // Health check
 app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
 
-
+app.use("/api/v1/chat", chatRoutes);
 app.use("/api/v1/auth", authRoutes);
 
 

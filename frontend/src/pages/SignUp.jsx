@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { HiArrowLeft } from 'react-icons/hi';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
@@ -88,6 +89,7 @@ function SignUp() {
       });
 
       setMessage('✅ Account created successfully!');
+      toast.success('Account created successfully');
       navigate('/signin/', { replace: true });
       setUser({
         fname: '',
@@ -102,8 +104,10 @@ function SignUp() {
       });
     } catch (e) {
       console.error(e);
-      setError({ api: e.response?.data?.message || e.message || 'Something went wrong' });
+      const msg = e.response?.data?.message || e.message || 'Something went wrong';
+      setError({ api: msg });
       setMessage('❌ Failed to create account.');
+      toast.error(msg);
     }
   };
 

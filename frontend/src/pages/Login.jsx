@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { HiArrowLeft } from "react-icons/hi";
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 function Login() {
 
@@ -33,11 +33,13 @@ function Login() {
 });
 
       setMessage('✅ Login successful!');
+      toast.success('Logged in successfully');
       setError('');
       navigate('/profile', { replace: true });
    
     } catch (err) {
       setError('❌ Invalid email or password.');
+      toast.error('Invalid email or password');
       setMessage('');
     }
   };

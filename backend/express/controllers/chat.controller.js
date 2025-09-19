@@ -197,6 +197,26 @@ const getUserReports = async (req, res) => {
   }
 };
 
+// Delete a report and its chats
+const deleteReportAndChats = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+    const userId = req.user._id;
+
+    const report = await Report.findOne({ _id: reportId, user: userId });
+    if (!report) {
+      return res.status(404).json({ success: false, message: "Report not found" });
+    }
+
+    await Chat.deleteMany({ report: reportId });
+    await report.deleteOne();
+
+    return res.status(200).json({ success: true, message: "Report and chats deleted" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // Generate AI response using Google Gemini with PDF text context
 const generateAIResponse = async (userMessage, report) => {
   try {
@@ -246,4 +266,5 @@ module.exports = {
   sendMessage,
   getChatHistory,
   getUserReports,
+  deleteReportAndChats,
 };

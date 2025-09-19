@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext, memo } from "react";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
@@ -19,6 +19,59 @@ import {
   AlertCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+const MessageBubble = memo(({ message }) => {
+  const isUser = message.sender === "user";
+  const isError = message.isError;
+
+  const formatTime = (date) => {
+    return new Date(date).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  return (
+    <motion.div
+      // Prevent re-animating on every parent re-render
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}
+      layout
+    >
+      <div className={`flex items-start gap-3 max-w-[80%] ${isUser ? "flex-row-reverse" : "flex-row"}`}>
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+          isUser
+            ? "bg-blue-500 text-white"
+            : isError
+              ? "bg-red-500 text-white"
+              : "bg-gradient-to-br from-purple-500 to-pink-500 text-white"
+        }`}>
+          {isUser ? <User size={16} /> : <Bot size={16} />}
+        </div>
+
+        <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
+          <div className={`px-4 py-3 rounded-2xl ${
+            isUser
+              ? "bg-blue-500 text-white rounded-br-md"
+              : isError
+                ? "bg-red-50 text-red-800 border border-red-200 rounded-bl-md"
+                : "bg-white text-gray-800 border border-gray-200 rounded-bl-md shadow-sm"
+          }`}>
+            <p className="text-sm leading-relaxed whitespace-pre-wrap">
+              {message.message}
+            </p>
+          </div>
+          <span className="text-xs text-gray-500 mt-1 px-2">
+            {formatTime(message.createdAt)}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+});
+MessageBubble.displayName = 'MessageBubble';
 
 const ChatPage = () => {
   const { user } = useContext(AuthContext);
@@ -121,63 +174,13 @@ const ChatPage = () => {
     }
   };
 
-  const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-  };
+  // moved into MessageBubble
 
   const getReportTypeDisplay = (type) => {
     return type.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
-  const MessageBubble = ({ message, index }) => {
-    const isUser = message.sender === "user";
-    const isError = message.isError;
-
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: index * 0.1 }}
-        className={`flex ${isUser ? "justify-end" : "justify-start"} mb-4`}
-      >
-        <div className={`flex items-start gap-3 max-w-[80%] ${isUser ? "flex-row-reverse" : "flex-row"}`}>
-          {/* Avatar */}
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-            isUser 
-              ? "bg-blue-500 text-white" 
-              : isError 
-                ? "bg-red-500 text-white" 
-                : "bg-gradient-to-br from-purple-500 to-pink-500 text-white"
-          }`}>
-            {isUser ? <User size={16} /> : <Bot size={16} />}
-          </div>
-
-          {/* Message Content */}
-          <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
-            <div className={`px-4 py-3 rounded-2xl ${
-              isUser
-                ? "bg-blue-500 text-white rounded-br-md"
-                : isError
-                  ? "bg-red-50 text-red-800 border border-red-200 rounded-bl-md"
-                  : "bg-white text-gray-800 border border-gray-200 rounded-bl-md shadow-sm"
-            }`}>
-              <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                {message.message}
-              </p>
-            </div>
-            
-            {/* Timestamp */}
-            <span className="text-xs text-gray-500 mt-1 px-2">
-              {formatTime(message.createdAt)}
-            </span>
-          </div>
-        </div>
-      </motion.div>
-    );
-  };
+  // MessageBubble component moved outside
 
   if (isLoading) {
     return (
@@ -235,29 +238,27 @@ const ChatPage = () => {
       <div className="max-w-4xl mx-auto h-[calc(100vh-80px)] flex flex-col">
         {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          <AnimatePresence>
-            {messages.length === 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center py-12"
-              >
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Bot className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Welcome to AI Medical Assistant
-                </h3>
-                <p className="text-gray-600 max-w-md mx-auto">
-                  I'm here to help you understand your medical report. Ask me anything about your test results!
-                </p>
-              </motion.div>
-            ) : (
-              messages.map((message, index) => (
-                <MessageBubble key={message._id} message={message} index={index} />
-              ))
-            )}
-          </AnimatePresence>
+          {messages.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center py-12"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Bot className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Welcome to AI Medical Assistant
+              </h3>
+              <p className="text-gray-600 max-w-md mx-auto">
+                I'm here to help you understand your medical report. Ask me anything about your test results!
+              </p>
+            </motion.div>
+          ) : (
+            messages.map((message) => (
+              <MessageBubble key={message._id} message={message} />
+            ))
+          )}
 
           {/* Typing Indicator */}
           {isTyping && (

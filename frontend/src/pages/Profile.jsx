@@ -75,6 +75,18 @@ function Profile() {
 
     // Fetch chat data
     fetchChats();
+    
+    // Listen for delete events from ChatCard (optimistic UI)
+    const onDeleted = (e) => {
+      const id = e.detail?.reportId;
+      if (!id) return;
+      setChats(prev => prev.filter(c => c.report?._id !== id));
+    };
+    window.addEventListener('chat:deleted', onDeleted);
+
+    return () => {
+      window.removeEventListener('chat:deleted', onDeleted);
+    }
   }, []);
 
   return (
